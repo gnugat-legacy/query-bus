@@ -1,4 +1,4 @@
-# QueryBus [![SensioLabsInsight](https://insight.sensiolabs.com/projects/e3f1b42c-e796-40c8-bfb1-299a79983d2e/mini.png)](https://insight.sensiolabs.com/projects/e3f1b42c-e796-40c8-bfb1-299a79983d2e) [![Travis CI](https://travis-ci.org/gnugat/query-bus.png)](https://travis-ci.org/gnugat/query-bus)
+# QueryBus [![SensioLabsInsight](https://insight.sensiolabs.com/projects/f7b5e707-5a4c-4dcb-9959-8cca01e4fab4/mini.png)](https://insight.sensiolabs.com/projects/f7b5e707-5a4c-4dcb-9959-8cca01e4fab4) [![Travis CI](https://travis-ci.org/gnugat/query-bus.png)](https://travis-ci.org/gnugat/query-bus)
 
 A PHP library for Interrogatory Messages.
 
