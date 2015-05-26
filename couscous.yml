@@ -1,0 +1,17 @@
+template:
+    url: https://github.com/CouscousPHP/Template-Light.git
+
+baseUrl: http://gnugat.github.io/query-bus
+
+title: QueryBus
+subTitle: A PHP library for Interrogatory Messages
+
+github:
+    user: gnugat
+    repo: query-bus
+
+menu:
+    items:
+        home:
+            text: Home
+            relativeUrl:

@@ -1,0 +1,7 @@
+# Dependencies
+
+/vendor/
+/composer.lock
+
+# Couscous
+/.couscous/
