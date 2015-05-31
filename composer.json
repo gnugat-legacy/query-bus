@@ -1,8 +1,9 @@
 {
     "name": "gnugat/query-bus",
-    "license": "proprietary",
-    "type": "project",
-    "description": "Smart Product",
+    "license": "MIT",
+    "type": "library",
+    "description": "A PHP library for Interrogatory Messages.",
+    "keywords": ["query", "bus", "interrogatory", "message", "bundle", "symfony"],
     "homepage": "https://gnugat.github.io/query-bus",
     "autoload": {
         "psr-4": {

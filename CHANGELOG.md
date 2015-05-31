@@ -1,5 +1,9 @@
 # Changes between versions
 
+## 2.0.1: Fixed composer description
+
+* fixed composer description
+
 ## 2.0.0: Removed priorities
 
 * removed priority parameter from `QueryBus#add`
