@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>QueryBus</title>
+
+        <link rel="stylesheet" href="http://gnugat.github.io/query-bus/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://gnugat.github.io/query-bus/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://gnugat.github.io/query-bus/css/highlight.dark.css">
+        <link rel="stylesheet" href="http://gnugat.github.io/query-bus/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="http://gnugat.github.io/query-bus/">
+                QueryBus
+                <small class="hidden-xs hidden-sm">
+                    A PHP library for Interrogatory Messages
+                </small>
+            </a>
+
+                            <a href="https://github.com/gnugat/query-bus">
+                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+                </a>
+            
+        </header>
+
+        <main class="container-fluid">
+            <div class="row">
+
+                
+                    <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                        <ul class="nav nav-pills nav-stacked">
+                                                            <li class="">
+                                    <a href="http://gnugat.github.io/query-bus/">
+                                        Home
+                                    </a>
+                                </li>
+                                                    </ul>
+
+                    </nav>
+
+                
+                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                    <h1>QueryBus <a href="https://insight.sensiolabs.com/projects/f7b5e707-5a4c-4dcb-9959-8cca01e4fab4"><img src="https://insight.sensiolabs.com/projects/f7b5e707-5a4c-4dcb-9959-8cca01e4fab4/mini.png" alt="SensioLabsInsight" /></a> <a href="https://travis-ci.org/gnugat/query-bus"><img src="https://travis-ci.org/gnugat/query-bus.png" alt="Travis CI" /></a></h1>
+<p>A PHP library for Interrogatory Messages.</p>
+<p><a href="http://verraes.net/2015/01/messaging-flavours/">Interrogatory Messages</a> are passed
+to the <code>QueryBus</code> service which returns the result of the first <code>QueryMatcher</code>
+that supports it.</p>
+<h2>Installation</h2>
+<p>Marshaller can be installed using <a href="http://getcomposer.org/">Composer</a>:</p>
+<pre><code>composer require "gnugat/query-bus:~2.0"</code></pre>
+<h2>Simple conversion</h2>
+<p>Let's take the following table:</p>
+<pre><code class="language-sql">CREATE TABLE article (
+    id int,
+    title VARCHAR(255),
+    content TEXT
+);</code></pre>
+<p>If we want to execute the following query:</p>
+<pre><code class="language-sql">SELECT id, title, content FROM article WHERE id = 42;</code></pre>
+<p>Then we have first to create a <code>Query</code>, which is a simple
+<a href="http://martinfowler.com/eaaCatalog/dataTransferObject.html">DTO</a>:</p>
+<pre><code class="language-php">&lt;?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Gnugat\QueryBus\QueryBus;
+
+class GetArticle
+{
+    public $id;
+
+    public function __construct($id)
+    {
+        if (null === $id) {
+            throw new \InvalidArgumentException('Required parameter ID is missing');
+        }
+        $this-&gt;id = (int) $id;
+    }
+}</code></pre>
+<blockquote>
+<p><strong>Note</strong>: Queries can contain simple <a href="http://verraes.net/2015/02/form-command-model-validation/">validation</a>,
+for example to check for <code>null</code> values.</p>
+</blockquote>
+<p>Then we have to create a <code>QueryMatcher</code>:</p>
+<pre><code class="language-php">// ...
+
+use Gnugat\QueryBus\QueryMatcher;
+
+class GetArticleMatcher implements QueryMatcher
+{
+    private $connection;
+
+    public function __construct($connection)
+    {
+        $this-&gt;connection = $connection;
+        pg_prepare($this-&gt;connection, 'get_article', 'SELECT id, title, content FROM articles WHERE id = $1');
+    }
+
+    public function supports($query)
+    {
+        return $query instanceof GetArticle;
+    }
+
+    public function match($query)
+    {
+        $result = pg_execute($this-&gt;connection, 'get_article', array($query-&gt;id));
+
+        return pg_fetch_array($result, NULL, PGSQL_ASSOC);
+    }
+}</code></pre>
+<p>Next we need to register it in <code>QueryBus</code>:</p>
+<pre><code class="language-php">// ...
+
+use Gnugat\QueryBus\QueryBus;
+
+$connection = pg_pconnect('dbname=blog');
+$queryBus = new QueryBus();
+$queryBus-&gt;add(new GetArticleMatcher($connection));</code></pre>
+<p>Finally we can actually execute the query:</p>
+<pre><code class="language-php">// ...
+
+$articles = $queryBus-&gt;match(new GetArticle(42));</code></pre>
+<h2>Further documentation</h2>
+<p>You can see the current and past versions using one of the following:</p>
+<ul>
+<li>the <code>git tag</code> command</li>
+<li>the <a href="https://github.com/gnugat/query-bus/releases">releases page on Github</a></li>
+<li>the file listing the <a href="CHANGELOG.html">changes between versions</a></li>
+</ul>
+<p>You can find more documentation at the following links:</p>
+<ul>
+<li><a href="LICENSE">copyright and MIT license</a></li>
+<li><a href="VERSIONING.html">versioning and branching models</a></li>
+<li><a href="CONTRIBUTING.html">contribution instructions</a></li>
+</ul>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="http://yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
