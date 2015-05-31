@@ -16,26 +16,6 @@ use PhpSpec\ObjectBehavior;
 
 class QueryBusSpec extends ObjectBehavior
 {
-    function it_sorts_registered_matchers(
-        QueryMatcher $queryMatcher1,
-        QueryMatcher $queryMatcher2,
-        QueryMatcher $queryMatcher3
-    ) {
-        $query = array();
-
-        $queryMatcher1->supports($query)->willReturn(true);
-        $queryMatcher2->supports($query)->willReturn(true);
-        $queryMatcher3->supports($query)->willReturn(true);
-
-        $this->add($queryMatcher1, 10);
-        $this->add($queryMatcher2, 0);
-        $this->add($queryMatcher3, 20);
-
-        $queryMatcher3->match($query)->shouldBeCalled();
-
-        $this->match($query);
-    }
-
     function it_executes_the_appropriate_strategy(
         QueryMatcher $queryMatcher1,
         QueryMatcher $queryMatcher2,

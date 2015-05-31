@@ -19,21 +19,14 @@ class QueryBus
     /**
      * @var array
      */
-    private $prioritizedMatchers = array();
-
-    /**
-     * @var bool
-     */
-    private $isSorted = false;
+    private $queryMatchers = array();
 
     /**
      * @param QueryMatcher $queryMatcher
-     * @param int          $priority
      */
-    public function add(QueryMatcher $queryMatcher, $priority = 0)
+    public function add(QueryMatcher $queryMatcher)
     {
-        $this->prioritizedMatchers[$priority][] = $queryMatcher;
-        $this->isSorted = false;
+        $this->queryMatchers[] = $queryMatcher;
     }
 
     /**
@@ -45,26 +38,12 @@ class QueryBus
      */
     public function match($query)
     {
-        if (!$this->isSorted) {
-            $this->sortmatchers();
-        }
-        foreach ($this->prioritizedMatchers as $priority => $matchers) {
-            foreach ($matchers as $queryMatcher) {
-                if ($queryMatcher->supports($query)) {
-                    return $queryMatcher->match($query);
-                }
+        foreach ($this->queryMatchers as $queryMatcher) {
+            if ($queryMatcher->supports($query)) {
+                return $queryMatcher->match($query);
             }
         }
 
         throw new NotSupportedException('The given $query is not supported by any registered matchers.');
-    }
-
-    /**
-     * Sort registered matchers according to their priority.
-     */
-    private function sortMatchers()
-    {
-        krsort($this->prioritizedMatchers);
-        $this->isSorted = true;
     }
 }

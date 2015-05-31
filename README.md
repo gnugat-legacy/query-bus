@@ -10,7 +10,7 @@ that supports it.
 
 Marshaller can be installed using [Composer](http://getcomposer.org/):
 
-    composer require "gnugat/query-bus:~1.0"
+    composer require "gnugat/query-bus:~2.0"
 
 ## Simple conversion
 
