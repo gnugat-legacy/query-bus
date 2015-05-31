@@ -3,6 +3,7 @@
     "license": "proprietary",
     "type": "project",
     "description": "Smart Product",
+    "homepage": "https://gnugat.github.io/query-bus",
     "autoload": {
         "psr-4": {
             "Gnugat\\QueryBus\\": "src/Gnugat/QueryBus"
