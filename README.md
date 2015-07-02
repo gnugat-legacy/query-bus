@@ -8,7 +8,7 @@ that supports it.
 
 ## Installation
 
-Marshaller can be installed using [Composer](http://getcomposer.org/):
+QueryBus can be installed using [Composer](http://getcomposer.org/):
 
     composer require "gnugat/query-bus:~2.0"
 
